@@ -1,0 +1,203 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import FeedRow from '../components/FeedRow.astro';
+
+const allEntries = await getCollection('entries');
+
+// Sort key: published ?? created, descending
+const sortedEntries = allEntries.sort((a, b) => {
+  const dateA = a.data.published ?? a.data.created;
+  const dateB = b.data.published ?? b.data.created;
+  return dateB.getTime() - dateA.getTime();
+});
+---
+
+<BaseLayout>
+  <section aria-labelledby="feed-heading">
+    <h2 id="feed-heading" class="sr-only">Entries Feed</h2>
+
+    <form class="filter-toolbar" id="feed-filter-form" role="search" aria-label="Filter entries">
+      <div class="filter-group">
+        <label for="filter-stage" class="filter-label">Stage:</label>
+        <select id="filter-stage" name="stage" class="filter-select">
+          <option value="polished" selected>Releases</option>
+          <option value="draft">Rough cuts</option>
+          <option value="all">Everything (All stages)</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="filter-domain" class="filter-label">Domain:</label>
+        <select id="filter-domain" name="domain" class="filter-select">
+          <option value="all" selected>All domains</option>
+          <option value="technology">Technology</option>
+          <option value="ppe">PPE</option>
+          <option value="arts-letters">Arts &amp; Letters (All)</option>
+          <option value="commentary">&nbsp;&nbsp;— Commentary</option>
+          <option value="creative">&nbsp;&nbsp;— Creative</option>
+        </select>
+      </div>
+
+      <div class="filter-summary" id="filter-summary" aria-live="polite">
+        Showing {sortedEntries.length} entries
+      </div>
+    </form>
+
+    <noscript>
+      <div class="lineage-card" style="margin-block-end: var(--space-4);">
+        <p style="margin: 0; font-size: var(--font-size-sm); color: var(--color-text-muted);">
+          <em>JavaScript is disabled. Showing all entries without client filtering.</em>
+        </p>
+      </div>
+    </noscript>
+
+    <ul class="feed-list" id="feed-list">
+      {sortedEntries.map((entry) => (
+        <FeedRow entry={entry} />
+      ))}
+    </ul>
+
+    <div id="empty-feed" class="empty-feed-message" style="display: none;">
+      <p>No entries match the selected filters.</p>
+      <button type="button" id="reset-filters-btn" class="filter-select" style="margin-block-start: var(--space-2);">
+        Reset filters
+      </button>
+    </div>
+  </section>
+
+  <script>
+    function initFeedFilter() {
+      const stageSelect = document.getElementById('filter-stage') as HTMLSelectElement | null;
+      const domainSelect = document.getElementById('filter-domain') as HTMLSelectElement | null;
+      const summaryEl = document.getElementById('filter-summary');
+      const emptyEl = document.getElementById('empty-feed');
+      const resetBtn = document.getElementById('reset-filters-btn');
+      const items = document.querySelectorAll<HTMLLIElement>('[data-feed-item]');
+
+      if (!stageSelect || !domainSelect) return;
+
+      const VALID_STAGES = new Set(['polished', 'draft', 'all']);
+      const VALID_DOMAINS = new Set([
+        'all',
+        'technology',
+        'ppe',
+        'econ-philosophy',
+        'arts-letters',
+        'commentary',
+        'creative',
+      ]);
+
+      function readUrlParams(): { stage: string; domain: string } {
+        const urlParams = new URLSearchParams(window.location.search);
+        const stageParam = urlParams.get('stage');
+        const domainParam = urlParams.get('domain');
+
+        const domain = domainParam && VALID_DOMAINS.has(domainParam) ? domainParam : 'all';
+        // If domain is explicitly filtered (e.g. from nav) without a stage, default to 'all' stages for that domain.
+        // Otherwise, default to 'polished' (Releases) for the homepage feed.
+        const defaultStage = domainParam && domainParam !== 'all' && !stageParam ? 'all' : 'polished';
+        const stage = stageParam && VALID_STAGES.has(stageParam) ? stageParam : defaultStage;
+
+        return { stage, domain };
+      }
+
+      function updateUrl(stage: string, domain: string) {
+        const url = new URL(window.location.href);
+        url.searchParams.set('stage', stage);
+        url.searchParams.set('domain', domain);
+        window.history.replaceState(null, '', url.toString());
+      }
+
+      function applyFilter() {
+        const currentStage = stageSelect?.value || 'polished';
+        const currentDomain = domainSelect?.value || 'all';
+
+        let visibleCount = 0;
+
+        items.forEach((item) => {
+          const itemStage = item.dataset.stage;
+          const itemDomain = item.dataset.domain;
+
+          const matchesStage = currentStage === 'all' || itemStage === currentStage;
+          const matchesDomain =
+            currentDomain === 'all' ||
+            itemDomain === currentDomain ||
+            (currentDomain === 'ppe' && (itemDomain === 'econ-philosophy' || itemDomain === 'ppe')) ||
+            (currentDomain === 'econ-philosophy' && (itemDomain === 'econ-philosophy' || itemDomain === 'ppe')) ||
+            (currentDomain === 'arts-letters' &&
+              (itemDomain === 'commentary' ||
+                itemDomain === 'creative' ||
+                itemDomain === 'arts-letters'));
+
+          if (matchesStage && matchesDomain) {
+            item.style.display = '';
+            visibleCount++;
+          } else {
+            item.style.display = 'none';
+          }
+        });
+
+        if (summaryEl) {
+          summaryEl.textContent = `Showing ${visibleCount} of ${items.length} ${visibleCount === 1 ? 'entry' : 'entries'}`;
+        }
+
+        if (emptyEl) {
+          emptyEl.style.display = visibleCount === 0 ? 'block' : 'none';
+        }
+      }
+
+      function syncFromUrl() {
+        const { stage, domain } = readUrlParams();
+        if (stageSelect) stageSelect.value = stage;
+        if (domainSelect) {
+          // Map econ-philosophy alias to ppe select option
+          domainSelect.value = domain === 'econ-philosophy' ? 'ppe' : domain;
+        }
+        applyFilter();
+      }
+
+      stageSelect.addEventListener('change', () => {
+        updateUrl(stageSelect.value, domainSelect.value);
+        applyFilter();
+      });
+
+      domainSelect.addEventListener('change', () => {
+        updateUrl(stageSelect.value, domainSelect.value);
+        applyFilter();
+      });
+
+      resetBtn?.addEventListener('click', () => {
+        stageSelect.value = 'polished';
+        domainSelect.value = 'all';
+        updateUrl('polished', 'all');
+        applyFilter();
+      });
+
+      window.addEventListener('popstate', syncFromUrl);
+
+      // Initial synchronization on page load
+      syncFromUrl();
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initFeedFilter);
+    } else {
+      initFeedFilter();
+    }
+  </script>
+</BaseLayout>
+
+<style>
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+</style>

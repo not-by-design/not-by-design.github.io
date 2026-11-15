@@ -1,0 +1,160 @@
+---
+import '../styles/global.css';
+import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title, description = SITE_DESCRIPTION } = Astro.props;
+const pageTitle = title ? `${title} — ${SITE_TITLE}` : SITE_TITLE;
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site || 'https://not-by-design.github.io');
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <script is:inline>
+      try {
+        const storedTheme = localStorage.getItem('theme-preference');
+        if (storedTheme === 'dark' || storedTheme === 'light') {
+          document.documentElement.dataset.theme = storedTheme;
+          const meta = document.querySelector('meta[name="color-scheme"]');
+          if (meta) meta.content = storedTheme;
+        }
+      } catch (e) {}
+    </script>
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+    <link rel="alternate" type="application/rss+xml" title={`${SITE_TITLE} (RSS)`} href="/rss.xml" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalUrl} />
+  </head>
+  <body>
+    <div class="site-wrapper">
+      <header class="site-header">
+        <div class="site-header-row">
+          <h1 class="site-title">
+            <a href="/">{SITE_TITLE}</a>
+          </h1>
+        </div>
+        <p class="site-description">
+          An open publication spanning <strong>Technology</strong>, <strong>PPE</strong>, and <strong>Arts &amp; Letters</strong>.
+        </p>
+        <nav class="site-nav" aria-label="Main Navigation">
+          <a href="/">All</a>
+          <a href="/?domain=technology">Technology</a>
+          <a href="/?domain=ppe">PPE</a>
+          <a href="/?domain=arts-letters">Arts &amp; Letters</a>
+          <a href="/about">About</a>
+          <div class="site-nav-actions">
+            <a href="/rss.xml">RSS</a>
+            <button
+              type="button"
+              id="theme-toggle"
+              class="theme-toggle-btn"
+              aria-label="Toggle color theme"
+              title="Toggle color theme"
+            >
+              <span id="theme-toggle-icon" aria-hidden="true">🌗</span>
+              <span id="theme-toggle-text">Theme</span>
+            </button>
+          </div>
+        </nav>
+      </header>
+
+      <main id="main-content">
+        <slot />
+      </main>
+
+      <footer class="site-footer">
+        <div>
+          <span>Content published under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a></span>
+          <span> · </span>
+          <span>Platform software under <a href="/LICENSE" target="_blank">MIT</a></span>
+        </div>
+        <div>
+          <a href="/rss.xml">RSS Feed</a>
+        </div>
+      </footer>
+    </div>
+
+    <script>
+      function setupThemeToggle() {
+        const toggleBtn = document.getElementById('theme-toggle');
+        const iconEl = document.getElementById('theme-toggle-icon');
+        const textEl = document.getElementById('theme-toggle-text');
+        const metaTheme = document.querySelector<HTMLMetaElement>('meta[name="color-scheme"]');
+
+        function getActiveTheme(): 'light' | 'dark' {
+          const stored = localStorage.getItem('theme-preference');
+          if (stored === 'light' || stored === 'dark') return stored;
+          return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+
+        function updateUI(theme: 'light' | 'dark') {
+          if (iconEl && textEl) {
+            if (theme === 'dark') {
+              iconEl.textContent = '🌙';
+              textEl.textContent = 'Dark';
+            } else {
+              iconEl.textContent = '☀️';
+              textEl.textContent = 'Light';
+            }
+          }
+        }
+
+        function setTheme(theme: 'light' | 'dark') {
+          document.documentElement.dataset.theme = theme;
+          if (metaTheme) metaTheme.content = theme;
+          localStorage.setItem('theme-preference', theme);
+          updateUI(theme);
+        }
+
+        // Initialize UI with active theme
+        updateUI(getActiveTheme());
+
+        toggleBtn?.addEventListener('click', () => {
+          const current = getActiveTheme();
+          const next = current === 'dark' ? 'light' : 'dark';
+          setTheme(next);
+        });
+
+        // Listen for OS theme preference changes when no explicit override
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+          if (!localStorage.getItem('theme-preference')) {
+            updateUI(e.matches ? 'dark' : 'light');
+          }
+        });
+
+        // Sync across tabs
+        window.addEventListener('storage', (e) => {
+          if (e.key === 'theme-preference') {
+            const newTheme = e.newValue === 'dark' || e.newValue === 'light' ? e.newValue : getActiveTheme();
+            if (e.newValue) {
+              document.documentElement.dataset.theme = newTheme;
+              if (metaTheme) metaTheme.content = newTheme;
+            } else {
+              delete document.documentElement.dataset.theme;
+              if (metaTheme) metaTheme.content = 'light dark';
+            }
+            updateUI(getActiveTheme());
+          }
+        });
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', setupThemeToggle);
+      } else {
+        setupThemeToggle();
+      }
+    </script>
+  </body>
+</html>

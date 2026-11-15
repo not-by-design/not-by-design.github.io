@@ -1,0 +1,182 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { DOMAINS, STAGES } from '../../consts';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('entries');
+  return entries.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+
+const allEntries = await getCollection('entries');
+
+// Find parent entry if derivedFrom is set
+const parentEntry = entry.data.derivedFrom
+  ? allEntries.find((e) => e.id === entry.data.derivedFrom)
+  : null;
+
+// Find derived works where derivedFrom equals this entry's id
+const derivedWorks = allEntries.filter((e) => e.data.derivedFrom === entry.id);
+
+const domainInfo = DOMAINS[entry.data.domain as keyof typeof DOMAINS] ?? { label: entry.data.domain, description: '' };
+const stageInfo = STAGES[entry.data.stage];
+
+const createdDateFormatted = new Intl.DateTimeFormat('en-US', {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+}).format(entry.data.created);
+
+const publishedDateFormatted = entry.data.published
+  ? new Intl.DateTimeFormat('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    }).format(entry.data.published)
+  : null;
+
+// Helper to check for YouTube embeddable URL
+function getYouTubeEmbedUrl(url: string): string | null {
+  try {
+    const parsed = new URL(url);
+    if (parsed.hostname.includes('youtube.com')) {
+      const v = parsed.searchParams.get('v');
+      return v ? `https://www.youtube-nocookie.com/embed/${v}` : null;
+    }
+    if (parsed.hostname === 'youtu.be') {
+      const v = parsed.pathname.slice(1);
+      return v ? `https://www.youtube-nocookie.com/embed/${v}` : null;
+    }
+  } catch {
+    return null;
+  }
+  return null;
+}
+
+const ytEmbed = entry.data.videoUrl ? getYouTubeEmbedUrl(entry.data.videoUrl) : null;
+---
+
+<BaseLayout title={entry.data.title}>
+  <article class="entry-article">
+    <nav aria-label="Breadcrumb">
+      <a href="/" class="entry-back-link">← Back to all entries</a>
+    </nav>
+
+    <header class="entry-header">
+      <h1 class="entry-title">{entry.data.title}</h1>
+      <div class="entry-meta-bar">
+        <span class="badge" data-domain={entry.data.domain} title={`Domain: ${domainInfo?.label ?? entry.data.domain}`}>
+          {domainInfo?.label ?? entry.data.domain}
+        </span>
+        <span class="badge" data-stage={entry.data.stage} title={`Stage: ${stageInfo?.label ?? entry.data.stage}`}>
+          {entry.data.stage === 'draft' ? 'Rough cut' : 'Release'}
+        </span>
+        <span class="row-type-badge">Type: {entry.data.type}</span>
+        <span>·</span>
+        <time datetime={entry.data.created.toISOString()} title="Created date">
+          Created: {createdDateFormatted}
+        </time>
+        {publishedDateFormatted && (
+          <>
+            <span>·</span>
+            <time datetime={entry.data.published?.toISOString()} title="Release date">
+              Released: {publishedDateFormatted}
+            </time>
+          </>
+        )}
+      </div>
+    </header>
+
+    {/* Lineage: Derived from (Parent) */}
+    {parentEntry && (
+      <section class="lineage-card" aria-labelledby="derived-from-heading">
+        <h2 id="derived-from-heading" class="lineage-title">Derived From:</h2>
+        <div class="lineage-item">
+          <div>
+            <a href={`/entries/${parentEntry.id}`}>{parentEntry.data.title}</a>
+            <span style="font-size: var(--font-size-xs); color: var(--color-text-muted); margin-inline-start: var(--space-2);">
+              ({parentEntry.data.stage === 'draft' ? 'Rough cut' : 'Release'})
+            </span>
+          </div>
+          <span class="badge" data-stage={parentEntry.data.stage}>
+            {parentEntry.data.stage === 'draft' ? 'Rough cut' : 'Release'}
+          </span>
+        </div>
+      </section>
+    )}
+
+    {/* Lineage: Derived works (Children) */}
+    {derivedWorks.length > 0 && (
+      <section class="lineage-card" aria-labelledby="derived-works-heading">
+        <h2 id="derived-works-heading" class="lineage-title">Derived Works & Lineage ({derivedWorks.length}):</h2>
+        <ul class="lineage-list">
+          {derivedWorks.map((work) => (
+            <li class="lineage-item">
+              <div>
+                <a href={`/entries/${work.id}`}>{work.data.title}</a>
+                <span style="font-size: var(--font-size-xs); color: var(--color-text-muted); margin-inline-start: var(--space-2);">
+                  ({work.data.type})
+                </span>
+              </div>
+              <span class="badge" data-stage={work.data.stage}>
+                {work.data.stage === 'draft' ? 'Rough cut' : 'Release'}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+
+    {/* Video Embed or Link */}
+    {entry.data.videoUrl && (
+      <section class="video-container" aria-label="Video content">
+        {ytEmbed ? (
+          <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: var(--radius-md);">
+            <iframe
+              src={ytEmbed}
+              title={`Video for ${entry.data.title}`}
+              loading="lazy"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+              style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;"
+            />
+          </div>
+        ) : (
+          <div class="lineage-card">
+            <strong>Video resource: </strong>
+            <a href={entry.data.videoUrl} target="_blank" rel="noopener noreferrer">
+              Watch on external platform ↗
+            </a>
+          </div>
+        )}
+      </section>
+    )}
+
+    {/* Entry Body Markdown */}
+    <div class="entry-body">
+      <Content />
+    </div>
+
+    {/* Cross-posts */}
+    {entry.data.crossPosts && entry.data.crossPosts.length > 0 && (
+      <section class="crossposts-section" aria-label="Cross-posts">
+        <strong>Also published to:</strong>
+        <ul class="crossposts-list">
+          {entry.data.crossPosts.map((post) => (
+            <li>
+              <a href={post.url} target="_blank" rel="noopener noreferrer">
+                {post.platform} ↗
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+  </article>
+</BaseLayout>

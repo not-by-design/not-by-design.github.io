@@ -1,0 +1,45 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { DOMAINS, STAGES } from '../consts';
+
+interface Props {
+  entry: CollectionEntry<'entries'>;
+}
+
+const { entry } = Astro.props;
+const { title, domain, stage, type, created, published } = entry.data;
+
+const effectiveDate = published ?? created;
+const formattedDate = new Intl.DateTimeFormat('en-US', {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+}).format(effectiveDate);
+
+const isoDate = effectiveDate.toISOString();
+const domainInfo = DOMAINS[domain as keyof typeof DOMAINS] ?? { label: domain, description: '' };
+const stageInfo = STAGES[stage];
+---
+
+<li
+  class="feed-item"
+  data-feed-item
+  data-domain={domain}
+  data-stage={stage}
+>
+  <a href={`/entries/${entry.id}`} class="feed-row" data-stage={stage}>
+    <div class="feed-row-header">
+      <h2 class="row-title">{title}</h2>
+      <time datetime={isoDate} class="row-date">{formattedDate}</time>
+    </div>
+    <div class="row-meta">
+      <span class="badge" data-domain={domain} title={`Domain: ${domainInfo?.label ?? domain}`}>
+        {domainInfo?.label ?? domain}
+      </span>
+      <span class="badge" data-stage={stage} title={`Stage: ${stageInfo?.label ?? stage}`}>
+        {stage === 'draft' ? 'Rough cut' : 'Release'}
+      </span>
+      <span class="row-type-badge">({type})</span>
+    </div>
+  </a>
+</li>

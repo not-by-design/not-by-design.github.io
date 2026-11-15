@@ -1,0 +1,240 @@
+/**
+ * Design Tokens - Not by Design
+ * Centralized design tokens for colors, typography, spacing, and domain/stage styling.
+ * Supports light & dark modes with native color-scheme and prefers-color-scheme.
+ */
+
+:root {
+  color-scheme: light dark;
+
+  /* Typography */
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, "DejaVu Sans Mono", monospace;
+  --font-serif: "Iowan Old Style", "Apple Garamond", "Baskerville", "Times New Roman", "Droid Serif", Times, "Source Serif Pro", serif;
+
+  --font-size-xs: 0.75rem;     /* 12px */
+  --font-size-sm: 0.875rem;    /* 14px */
+  --font-size-base: 1rem;      /* 16px */
+  --font-size-md: 1.125rem;    /* 18px */
+  --font-size-lg: 1.25rem;     /* 20px */
+  --font-size-xl: 1.5rem;      /* 24px */
+  --font-size-2xl: 1.875rem;   /* 30px */
+  --font-size-3xl: 2.25rem;    /* 36px */
+
+  --line-height-tight: 1.25;
+  --line-height-base: 1.65;
+  --line-height-loose: 1.8;
+
+  /* Spacing Scale */
+  --space-1: 0.25rem;  /* 4px */
+  --space-2: 0.5rem;   /* 8px */
+  --space-3: 0.75rem;  /* 12px */
+  --space-4: 1rem;     /* 16px */
+  --space-5: 1.25rem;  /* 20px */
+  --space-6: 1.5rem;   /* 24px */
+  --space-8: 2rem;     /* 32px */
+  --space-10: 2.5rem;  /* 40px */
+  --space-12: 3rem;    /* 48px */
+  --space-16: 4rem;    /* 64px */
+
+  /* Layout Widths */
+  --content-max-ch: 72ch;
+  --container-max-width: 1200px;
+
+  /* Borders & Radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-pill: 9999px;
+
+  /* Light Theme (Default) */
+  --color-bg: #fbfbfb;
+  --color-surface: #ffffff;
+  --color-surface-hover: #f3f4f6;
+  --color-surface-muted: #f8fafc;
+  --color-text: #1e293b;
+  --color-text-muted: #64748b;
+  --color-text-subtle: #94a3b8;
+  --color-border: #e2e8f0;
+  --color-border-subtle: #f1f5f9;
+  --color-border-strong: #cbd5e1;
+  --color-link: #1d4ed8;
+  --color-link-hover: #1e40af;
+  --color-focus: #3b82f6;
+
+  /* Domain Color Tokens - Light */
+  --domain-tech-bg: #f0fdfa;
+  --domain-tech-text: #115e59;
+  --domain-tech-border: #99f6e4;
+
+  --domain-econ-bg: #eef2ff;
+  --domain-econ-text: #3730a3;
+  --domain-econ-border: #c7d2fe;
+
+  --domain-commentary-bg: #fff1f2;
+  --domain-commentary-text: #9f1239;
+  --domain-commentary-border: #fecdd3;
+
+  --domain-creative-bg: #fffbeb;
+  --domain-creative-text: #92400e;
+  --domain-creative-border: #fde68a;
+
+  /* Stage Color Tokens - Light */
+  --stage-polished-bg: #f0fdf4;
+  --stage-polished-text: #166534;
+  --stage-polished-border: #bbf7d0;
+
+  --stage-draft-bg: #fefce8;
+  --stage-draft-text: #854d0e;
+  --stage-draft-border: #fef08a;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+}
+
+:root:has(> head > meta[name="color-scheme"][content="dark"]),
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+:root:has(> head > meta[name="color-scheme"][content="light"]),
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
+/* Dark Theme via System Preference */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not(:has(> head > meta[name="color-scheme"][content="light"])) {
+    --color-bg: #101215;
+    --color-surface: #171a1f;
+    --color-surface-hover: #20242b;
+    --color-surface-muted: #13161a;
+    --color-text: #f1f5f9;
+    --color-text-muted: #94a3b8;
+    --color-text-subtle: #64748b;
+    --color-border: #28303d;
+    --color-border-subtle: #1e242e;
+    --color-border-strong: #3b4455;
+    --color-link: #60a5fa;
+    --color-link-hover: #93c5fd;
+    --color-focus: #60a5fa;
+
+    --domain-tech-bg: #042f2e;
+    --domain-tech-text: #99f6e4;
+    --domain-tech-border: #115e59;
+
+    --domain-econ-bg: #1e1b4b;
+    --domain-econ-text: #c7d2fe;
+    --domain-econ-border: #3730a3;
+
+    --domain-commentary-bg: #4c0519;
+    --domain-commentary-text: #fecdd3;
+    --domain-commentary-border: #9f1239;
+
+    --domain-creative-bg: #451a03;
+    --domain-creative-text: #fde68a;
+    --domain-creative-border: #78350f;
+
+    --stage-polished-bg: #052e16;
+    --stage-polished-text: #86efac;
+    --stage-polished-border: #166534;
+
+    --stage-draft-bg: #422006;
+    --stage-draft-text: #fde047;
+    --stage-draft-border: #854d0e;
+
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+  }
+}
+
+/* Explicit Dark Theme Override */
+:root[data-theme="dark"],
+:root:has(> head > meta[name="color-scheme"][content="dark"]) {
+  --color-bg: #101215;
+  --color-surface: #171a1f;
+  --color-surface-hover: #20242b;
+  --color-surface-muted: #13161a;
+  --color-text: #f1f5f9;
+  --color-text-muted: #94a3b8;
+  --color-text-subtle: #64748b;
+  --color-border: #28303d;
+  --color-border-subtle: #1e242e;
+  --color-border-strong: #3b4455;
+  --color-link: #60a5fa;
+  --color-link-hover: #93c5fd;
+  --color-focus: #60a5fa;
+
+  --domain-tech-bg: #042f2e;
+  --domain-tech-text: #99f6e4;
+  --domain-tech-border: #115e59;
+
+  --domain-econ-bg: #1e1b4b;
+  --domain-econ-text: #c7d2fe;
+  --domain-econ-border: #3730a3;
+
+  --domain-commentary-bg: #4c0519;
+  --domain-commentary-text: #fecdd3;
+  --domain-commentary-border: #9f1239;
+
+  --domain-creative-bg: #451a03;
+  --domain-creative-text: #fde68a;
+  --domain-creative-border: #78350f;
+
+  --stage-polished-bg: #052e16;
+  --stage-polished-text: #86efac;
+  --stage-polished-border: #166534;
+
+  --stage-draft-bg: #422006;
+  --stage-draft-text: #fde047;
+  --stage-draft-border: #854d0e;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+}
+
+/* Explicit Light Theme Override */
+:root[data-theme="light"],
+:root:has(> head > meta[name="color-scheme"][content="light"]) {
+  --color-bg: #fbfbfb;
+  --color-surface: #ffffff;
+  --color-surface-hover: #f3f4f6;
+  --color-surface-muted: #f8fafc;
+  --color-text: #1e293b;
+  --color-text-muted: #64748b;
+  --color-text-subtle: #94a3b8;
+  --color-border: #e2e8f0;
+  --color-border-subtle: #f1f5f9;
+  --color-border-strong: #cbd5e1;
+  --color-link: #1d4ed8;
+  --color-link-hover: #1e40af;
+  --color-focus: #3b82f6;
+
+  --domain-tech-bg: #f0fdfa;
+  --domain-tech-text: #115e59;
+  --domain-tech-border: #99f6e4;
+
+  --domain-econ-bg: #eef2ff;
+  --domain-econ-text: #3730a3;
+  --domain-econ-border: #c7d2fe;
+
+  --domain-commentary-bg: #fff1f2;
+  --domain-commentary-text: #9f1239;
+  --domain-commentary-border: #fecdd3;
+
+  --domain-creative-bg: #fffbeb;
+  --domain-creative-text: #92400e;
+  --domain-creative-border: #fde68a;
+
+  --stage-polished-bg: #f0fdf4;
+  --stage-polished-text: #166534;
+  --stage-polished-border: #bbf7d0;
+
+  --stage-draft-bg: #fefce8;
+  --stage-draft-text: #854d0e;
+  --stage-draft-border: #fef08a;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+}
