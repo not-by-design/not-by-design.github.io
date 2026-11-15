@@ -1,0 +1,14 @@
+- [x] create agents.md file with instructions
+    - conventions around git commits and releases delineating content releases vs site change releases
+- [x] in main navigation, link domain categories instead of Polish vs Drafts
+- [x] rename content buckets to "Rough cuts" vs "Releases" across UI, badges, filters, and docs
+- [x] add a light / dark mode toggle if possible (with localStorage persistence & FOUC prevention)
+- [x] instead of Econ + Philo, use acronym PPE explained in header subtitle (Philosophy, Politics & Economics)
+- [x] remove all references to "Nick", "personal site", and "practice thinking in public" in favor of proper publication branding
+- [x] bifurcate "artwork" into Commentary (criticism/appraisals on film, TV, media) and Creative (fiction, character studies, poetry), grouped on main navigation under "Arts & Letters"
+- [x] in main nav bar, order: Technology first, then PPE, then Arts & Letters
+- [x] mark each dummy entry as sample content (already present in all five entries)
+- [x] reduce desktop page margins by widening the site container while preserving the reading measure
+- [x] use only “PPE” in site labels and add an About page that explains the acronym and publication perspective.
+- [x] rewrite the About page around the spectrum between analytical systems thinking, PPE, and humanistic understanding
+- [x] widen entry articles to use the full available main-column width
