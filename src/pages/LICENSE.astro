@@ -1,0 +1,19 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import licenseText from '../../LICENSE.md?raw';
+---
+
+<BaseLayout title="MIT License" description="MIT License for the Not by Design website software.">
+  <article class="license-page">
+    <h1>MIT License</h1>
+    <p><a href="/">← Back to Not by Design</a></p>
+    <pre>{licenseText.trim()}</pre>
+  </article>
+</BaseLayout>
+
+<style>
+  .license-page pre {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+</style>
