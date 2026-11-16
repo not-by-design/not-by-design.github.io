@@ -19,6 +19,10 @@ Hosted on GitHub Pages at [https://not-by-design.github.io](https://not-by-desig
 
 ---
 
+## Planning New Content
+
+Track ideas in the [content backlog](CONTENT_BACKLOG.md) and develop each idea in its matching file under [`content-brainstorm/`](content-brainstorm/). The [directory guide](content-brainstorm/README.md) explains the ID and file naming steps. Contributors and agents should follow the workflow in [AGENTS.md](AGENTS.md).
+
 ## Content Model & Domains
 
 Every entry is a Markdown file in `src/content/entries/<id>.md`.
@@ -93,5 +97,5 @@ Deploys are automated via GitHub Actions on every push to `main`.
 
 ## Licenses
 
-- **Platform Code**: [MIT License](LICENSE)
+- **Platform Code**: [MIT License](LICENSE.md)
 - **Content & Writing**: [Creative Commons Attribution 4.0 International (CC BY 4.0)](LICENSE-CONTENT)

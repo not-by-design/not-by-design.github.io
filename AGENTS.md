@@ -71,6 +71,10 @@ git tag -a v0.x.x -m "Release v0.x.x: <summary of site improvements>"
 
 ## 3. Content Model & Promotion Pipeline
 
+### Content Idea Backlog
+
+Use [CONTENT_BACKLOG.md](CONTENT_BACKLOG.md) as the index for ongoing ideas and [`content-brainstorm/`](content-brainstorm/) for the detailed plan for each idea. Add a one-line idea under its domain heading with the next numeric ID (start at `101` if the backlog is empty), then create `content-brainstorm/<id>.md` and link it back to the backlog entry. Keep brainstorming and planning in that file.
+
 ### Content Buckets
 - **Rough cuts** (`stage: 'draft'`): Working papers, unpolished notes, story ideas, exercises, code reviews, script drafts.
 - **Releases** (`stage: 'polished'`): Polished essays, tools, demos, skills attained, milestones.
@@ -161,4 +165,4 @@ npm run preview
 - **Never commit secrets**, API keys, private credentials, or private drafts.
 - **Never commit proprietary work** or content derived from employer projects.
 - Writing is published under **CC BY 4.0** ([LICENSE-CONTENT](LICENSE-CONTENT)).
-- Code is published under the **MIT License** ([LICENSE](LICENSE)).
+- Code is published under the **MIT License** ([LICENSE.md](LICENSE.md)).

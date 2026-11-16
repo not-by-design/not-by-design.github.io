@@ -12,3 +12,8 @@
 - [x] use only “PPE” in site labels and add an About page that explains the acronym and publication perspective.
 - [x] rewrite the About page around the spectrum between analytical systems thinking, PPE, and humanistic understanding
 - [x] widen entry articles to use the full available main-column width
+- [x] Track content ideas in `CONTENT_BACKLOG.md` and detailed plans in `content-brainstorm/`; link the workflow from top-level docs and review for ways to improve it.
+- [x] Decide whether content brainstorming needs a repo-level agent skill. Deferred: the documented backlog-to-plan workflow is simple and sufficient for now; revisit if repeated use shows a need for more specialized guidance.
+- [x] Review this project for other feasible, valuable agent skills. No other distinct recurring workflow currently warrants a separate skill.
+- [x] Improve `/LICENSE` UX with a browser title and a visible way back to the site.
+- [x] Keep “Not by Design” as the public copyright attribution; it is the site's chosen identity, and the GitHub organization exists to host its Pages site.

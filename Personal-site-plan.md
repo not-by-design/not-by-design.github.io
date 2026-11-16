@@ -33,7 +33,7 @@ The six sections are the combinations of those properties:
 | 1B | econ-philosophy | polished | Think pieces; short videos derived from them |
 | 2A | creative | draft | Poems, haiku, story exercises, stream of consciousness, film ideas |
 | 2B | creative | polished | Refined versions of the best 2A work |
-| 3A | technology | draft | Code exercises, patterns, LeetCode, architecture reviews, stats practice |
+| 3A | technology | draft | Code exercises, patterns, Algorithm explanations, architecture reviews, stats practice |
 | 3B | technology | polished | Milestones, tool releases, skills attained, video demos |
 
 Note that 3B is not "a polished 3A exercise". It is a record of progress, so its entries are always `polished` with type `milestone` or `demo`.
@@ -192,7 +192,7 @@ Show on each entry:
 
 - **Repo name and site type.** The repo is `not-by-design.github.io` under `not-by-design`, served at the root with no `base` path needed.
 - **Publication name:** "Not by Design", centralized in `src/consts.ts`.
-- **Licenses:** MIT for code (`LICENSE`) and CC BY 4.0 for writing (`LICENSE-CONTENT`). Third-party material (quotes, film stills) stays under its own copyright.
+- **Licenses:** MIT for code (`LICENSE.md`) and CC BY 4.0 for writing (`LICENSE-CONTENT`). Third-party material (quotes, film stills) stays under its own copyright.
 
 ## 10. Deploy workflow
 
