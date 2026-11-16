@@ -73,7 +73,7 @@ git tag -a v0.x.x -m "Release v0.x.x: <summary of site improvements>"
 
 ### Content Idea Backlog
 
-Use [CONTENT_BACKLOG.md](CONTENT_BACKLOG.md) as the index for ongoing ideas and [`content-brainstorm/`](content-brainstorm/) for the detailed plan for each idea. Add a one-line idea under its domain heading with the next numeric ID (start at `101` if the backlog is empty), then create `content-brainstorm/<id>.md` and link it back to the backlog entry. Keep brainstorming and planning in that file.
+Use [CONTENT_BACKLOG.md](CONTENT_BACKLOG.md) as the index for ongoing ideas and [`content-brainstorm/`](content-brainstorm/) for the detailed plan for each idea. Add a one-line idea under its domain heading with the next numeric ID (start at `0` if the backlog is empty), then create `content-brainstorm/<id>.md` and link it back to the backlog entry. Keep brainstorming and planning in that file.
 
 ### Content Buckets
 - **Rough cuts** (`stage: 'draft'`): Working papers, unpolished notes, story ideas, exercises, code reviews, script drafts.
