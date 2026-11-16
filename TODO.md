@@ -17,3 +17,4 @@
 - [x] Review this project for other feasible, valuable agent skills. No other distinct recurring workflow currently warrants a separate skill.
 - [x] Improve `/LICENSE` UX with a browser title and a visible way back to the site.
 - [x] Keep “Not by Design” as the public copyright attribution; it is the site's chosen identity, and the GitHub organization exists to host its Pages site.
+- [ ] Locate the old blog and try to recover its articles, since the site may have closed down.
