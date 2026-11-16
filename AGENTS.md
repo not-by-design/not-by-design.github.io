@@ -111,6 +111,9 @@ When promoting a rough cut to a release:
 2. Create a new `.md` file with `stage: 'polished'`, set `published: <today>`, and point `derivedFrom: "<draft-id>"`.
 3. The entry page automatically renders the bidirectional lineage (parent link on the release, child links on the draft).
 
+### Retiring Sample Content
+When the first real (non-sample) polished entry is published in a content domain, remove that domain's sample entries from `src/content/entries/` in the same change. Treat each domain (`technology`, `ppe`, `commentary`, and `creative`) independently; leave sample entries in other domains until their first real polished entry is published. This rule is the exception to the promotion rule above: remove sample entries even when they are drafts or have derived releases, but never remove real drafts when promoting them.
+
 ---
 
 ## 4. Design & UX Principles
