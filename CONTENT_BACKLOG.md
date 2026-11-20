@@ -7,7 +7,7 @@ example: '[0] One-line description goes here.'
 Use the next integer after the largest ID already listed. Start at 0 when the backlog is empty. Add each idea under its relevant domain heading, then create a matching `content-brainstorm/<id>.md` file. Keep detailed brainstorming and planning in that file, not in this index.
 
 TECHNOLOGY
--
+- [6] Build a personal learning program for research simulation methods, with optional small coding exercises.
 
 PPE
 - [0] Map left-populist economic themes, deciding whether a survey essay or a series of focused posts best fits the material.
